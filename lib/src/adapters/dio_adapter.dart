@@ -27,12 +27,14 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
   @override
   final bool failOnMissingMock = true;
 
+  final HttpClientAdapter originalClientAdapter;
+
   /// Constructs a [DioAdapter] and configures the passed [Dio] instance.
   DioAdapter({
     required this.dio,
     this.matcher = const FullHttpRequestMatcher(),
     this.printLogs = false,
-  }) {
+  }) : originalClientAdapter = dio.httpClientAdapter {
     dio.httpClientAdapter = this;
     logger = getLogger(printLogs);
   }
@@ -52,16 +54,21 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
       );
     }
 
-    await setDefaultRequestHeaders(dio, requestOptions);
-    final response = await mockResponse(requestOptions) as MockResponse;
+    try {
+      await setDefaultRequestHeaders(dio, requestOptions);
+      final response = await mockResponse(requestOptions) as MockResponse;
 
-    // Waits for defined duration.
-    if (response.delay != null) await Future.delayed(response.delay!);
+      // Waits for defined duration.
+      if (response.delay != null) await Future.delayed(response.delay!);
 
-    // Throws DioException if response type is MockDioException.
-    if (isMockDioException(response)) throw response as DioException;
+      // Throws DioException if response type is MockDioException.
+      if (isMockDioException(response)) throw response as DioException;
 
-    return response as MockResponseBody;
+      return response as MockResponseBody;
+    } on AssertionError catch (_) {
+      return originalClientAdapter.fetch(
+          requestOptions, requestStream, cancelFuture);
+    }
   }
 
   /// Closes the [DioAdapter] by force.
