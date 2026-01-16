@@ -21,8 +21,6 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
   @override
   late Logger logger;
 
-  final bool printLogs;
-
   @override
   final bool failOnMissingMock = true;
 
@@ -32,11 +30,10 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
   DioAdapter({
     required this.dio,
     this.matcher = const FullHttpRequestMatcher(),
-    this.printLogs = false,
+    Level level = Level.FINE,
   }) : originalClientAdapter = dio.httpClientAdapter {
     dio.httpClientAdapter = this;
-    logger = Logger('HttpMockAdapter');
-    logger.level = printLogs ? Level.INFO : Level.OFF;
+    logger = Logger('HttpMockAdapter')..level = level;
   }
 
   /// [DioAdapter]`s [fetch] configuration intended to work with mock data.
