@@ -40,13 +40,13 @@ mixin Recording {
             );
           }
 
-          logger.fine(
+          logger.info(
               'Not matched request: ${requestOptions.method} ${requestOptions.uri}');
 
           return Future.value(null);
         }
 
-        logger.fine(
+        logger.info(
             'Matched request: ${requestOptions.method} ${requestOptions.uri}');
 
         return requestMatcher.mockResponse(requestOptions);

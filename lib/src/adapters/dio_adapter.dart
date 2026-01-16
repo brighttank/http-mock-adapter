@@ -36,7 +36,7 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
   }) : originalClientAdapter = dio.httpClientAdapter {
     dio.httpClientAdapter = this;
     logger = Logger('HttpMockAdapter');
-    logger.level = printLogs ? Level.FINE : Level.OFF;
+    logger.level = printLogs ? Level.INFO : Level.OFF;
   }
 
   /// [DioAdapter]`s [fetch] configuration intended to work with mock data.
