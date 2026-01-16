@@ -9,7 +9,7 @@ extension MatchesRequest on RequestOptions {
   /// Check values against matchers.
   /// [request] is the configured [Request] which would contain the matchers if used.
   bool matchesRequest(Request request, bool needsExactBody) {
-    final routeMatched = doesRouteMatch(path, request.route);
+    final routeMatched = doesRouteMatch('$baseUrl$path', request.route);
     final requestBodyMatched =
         matches(data, request.data, exactMaps: needsExactBody);
     final queryParametersMatched =
