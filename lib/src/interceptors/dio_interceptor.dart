@@ -15,8 +15,6 @@ class DioInterceptor extends Interceptor with Recording, RequestHandling {
   @override
   late Logger logger;
 
-  final bool printLogs;
-
   @override
   final bool failOnMissingMock;
 
@@ -24,12 +22,11 @@ class DioInterceptor extends Interceptor with Recording, RequestHandling {
   DioInterceptor({
     required this.dio,
     this.matcher = const FullHttpRequestMatcher(),
-    this.printLogs = false,
     this.failOnMissingMock = false,
+    Level logLevel = Level.FINE,
   }) {
     dio.interceptors.add(this);
-    logger = Logger('HttpMockAdapter');
-    logger.level = printLogs ? Level.INFO : Level.OFF;
+    logger = Logger('HttpMockAdapter')..level = logLevel;
   }
 
   /// Dio [Interceptor]`s [onRequest] configuration intended to catch and return
