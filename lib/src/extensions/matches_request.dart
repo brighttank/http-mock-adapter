@@ -53,7 +53,8 @@ extension MatchesRequest on RequestOptions {
     }
 
     if (expected == null && !exactMaps) {
-      return true; }
+      return true;
+    }
 
     /// if data is MockDataCallback do not need to match;
     if (expected is MockDataCallback) return true;

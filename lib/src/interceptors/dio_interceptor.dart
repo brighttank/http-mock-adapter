@@ -26,14 +26,18 @@ class DioInterceptor extends Interceptor with Recording, RequestHandling {
     Level logLevel = Level.FINE,
   }) {
     dio.interceptors.add(this);
-    logger = Logger('HttpMockAdapter')..level = logLevel;
+    logger = Logger('HttpMockAdapter');
+    try {
+      logger.level = logLevel;
+    } catch (_) {
+      // Ignore if logger level cannot be set
+    }
   }
 
   /// Dio [Interceptor]`s [onRequest] configuration intended to catch and return
   /// mocked request and data respectively.
   @override
   void onRequest(requestOptions, requestInterceptorHandler) async {
-    await setDefaultRequestHeaders(dio, requestOptions);
     final response = await mockResponse(requestOptions);
 
     if (response == null) {

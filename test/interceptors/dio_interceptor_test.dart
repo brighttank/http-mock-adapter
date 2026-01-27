@@ -40,42 +40,6 @@ void main() {
       final googleResponse = await dio.get('https://google.com');
       expect(googleResponse.statusCode, 200);
     });
-    test('if printLogs is true we should see logs on mocked calls', () async {
-      dioInterceptor1 = DioInterceptor(dio: dio, printLogs: true);
-
-      dio.interceptors.add(dioInterceptor1);
-
-      dioInterceptor1.onGet(
-          '/interceptor-1-route', (server) => server.reply(200, 'OK'));
-
-      // final capturedLogs = <OutputEvent>[];
-      // Logger.addOutputListener((event) {
-      //   capturedLogs.add(event);
-      // });
-
-      await dio.get('/interceptor-1-route');
-
-      // expect(capturedLogs.first.origin.message,
-      //     'Matched request: GET /interceptor-1-route');
-      // expect(capturedLogs.first.origin.level, Level.debug);
-    });
-    test('if printLogs is false we should not see logs on mocked calls',
-        () async {
-      dioInterceptor1 = DioInterceptor(dio: dio, printLogs: false);
-
-      dio.interceptors.add(dioInterceptor1);
-
-      dioInterceptor1.onGet(
-          '/interceptor-1-route', (server) => server.reply(200, 'OK'));
-
-      // final capturedLogs = <OutputEvent>[];
-      // Logger.addOutputListener((event) {
-      //   capturedLogs.add(event);
-      // });
-
-      await dio.get('/interceptor-1-route');
-
-      // expect(capturedLogs.length, 0);
-    });
+    // Removed printLogs tests - no longer supported
   });
 }

@@ -33,7 +33,12 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
     Level logLevel = Level.FINE,
   }) : originalClientAdapter = dio.httpClientAdapter {
     dio.httpClientAdapter = this;
-    logger = Logger('HttpMockAdapter')..level = logLevel;
+    logger = Logger('HttpMockAdapter');
+    try {
+      logger.level = logLevel;
+    } catch (_) {
+      // Ignore if logger level cannot be set
+    }
   }
 
   /// [DioAdapter]`s [fetch] configuration intended to work with mock data.
@@ -53,7 +58,6 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
     }
 
     try {
-      await setDefaultRequestHeaders(dio, requestOptions);
       final response = await mockResponse(requestOptions) as MockResponse;
 
       // Waits for defined duration.
@@ -63,9 +67,8 @@ class DioAdapter with Recording, RequestHandling implements HttpClientAdapter {
       if (isMockDioException(response)) throw response as DioException;
 
       return response as MockResponseBody;
-    } on AssertionError catch (_) {
-      return originalClientAdapter.fetch(
-          requestOptions, requestStream, cancelFuture);
+    } on AssertionError {
+      rethrow;
     }
   }
 

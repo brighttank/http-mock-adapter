@@ -1,5 +1,3 @@
-import 'dart:convert';
-
 import 'package:dio/dio.dart';
 import 'package:http_mock_adapter/http_mock_adapter.dart';
 import 'package:http_mock_adapter/src/handlers/request_handler.dart';
@@ -16,26 +14,9 @@ mixin RequestHandling on Recording {
   /// Configures default headers which are usually set by [DioMixin].
   /// * content-type
   /// * content-length
+  @Deprecated('Headers are set by Dio. This method no longer does anything.')
   Future<void> setDefaultRequestHeaders(Dio dio, RequestOptions options) async {
-    final data = options.data;
-    if (data != null &&
-        RequestMethods.allowedPayloadMethods
-            .contains(RequestMethods.forName(name: options.method))) {
-      if (data is FormData) {
-        options.headers[Headers.contentTypeHeader] =
-            'multipart/form-data; boundary=${data.boundary}';
-        options.headers[Headers.contentLengthHeader] = data.length.toString();
-      } else {
-        final data = await dio.transformer.transformRequest(options);
-        List<int> bytes;
-        if (options.requestEncoder != null) {
-          bytes = await options.requestEncoder!(data, options);
-        } else {
-          bytes = utf8.encode(data);
-        }
-        options.headers[Headers.contentLengthHeader] = bytes.length.toString();
-      }
-    }
+    // No-op - headers are handled by Dio
   }
 
   /// Takes in [route], [request], sets corresponding [RequestHandler],
